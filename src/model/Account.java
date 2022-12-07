@@ -1,3 +1,5 @@
+package model;
+
 import java.io.Serializable;
 
 public class Account implements Serializable {
@@ -35,7 +37,7 @@ public class Account implements Serializable {
 
     @Override
     public String toString() {
-        return "Account{" +
+        return "model.Account{" +
                 "userName='" + userName + '\'' +
                 ", passWord='" + passWord + '\'' +
                 '}';

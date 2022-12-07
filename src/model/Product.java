@@ -1,10 +1,21 @@
-public class Product {
+package model;
+
+import java.io.Serializable;
+
+public class Product implements Serializable {
     private int id;
     private String name;
     private int amount;
     private Double price;
 
     public Product() {
+    }
+
+    public Product(Product product) {
+        this.id = product.id;;
+        this.name = product.name;
+        this.price = product.price;
+        this.amount = product.amount;
     }
 
     public Product(int id, String name, int amount, Double price) {
@@ -48,7 +59,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product{" +
+        return "model.Product{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", amount=" + amount +

@@ -1,12 +1,15 @@
+package main;
 
+import io.ReadAndWriteAccount;
+import manager.ManageAccount;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class MainAccount {
+public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ReadAndWriteAccount.write(ManageAccount.getAccounts());
+        ReadAndWriteAccount.write(ManageAccount.accounts);
         while (true) {
             System.out.println("<----------MENU---------->");
             System.out.println("""
@@ -29,11 +32,9 @@ public class MainAccount {
                     break;
                 case 2:
                     ManageAccount.addAccount();
-                    ReadAndWriteAccount.write(ManageAccount.getAccounts());
                     break;
-
                 case 3:
-                    ReadAndWriteAccount.write(ManageAccount.getAccounts());
+                    ReadAndWriteAccount.write(ManageAccount.accounts);
                     System.exit(0);
             }
         }

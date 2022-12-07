@@ -1,15 +1,16 @@
+package manager;
+
+import io.ReadAndWriteAccount;
+import model.Account;
+import model.User;
+
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ManageAccount {
-    static ArrayList<Account> accounts = ReadAndWriteAccount.read();
+    static public ArrayList<Account> accounts = ReadAndWriteAccount.read();
     static Scanner scanner = new Scanner(System.in);
-
-
-    public static ArrayList<Account> getAccounts() {
-        return accounts;
-    }
 
     public static void setAccounts(ArrayList<Account> accounts) {
         ManageAccount.accounts = accounts;
@@ -29,13 +30,14 @@ public class ManageAccount {
             for (int i = 0; i < accounts.size(); i++) {
                 if (accounts.get(i).getUserName().equals(username) && accounts.get(i).getPassWord().equals(password)) {
                     System.out.println("Đăng nhập bằng tài khoản User");
-                    break;
-                } else {
-                    System.out.println("Đăng nhập thất bại");
+                    mainUser();
                     break;
                 }
+
             }
+            System.out.println("Đăng nhập thất bại");
         }
+        scanner.nextLine();
 
     }
 
@@ -59,8 +61,16 @@ public class ManageAccount {
         String name = scanner.nextLine();
         System.out.println("Nhập giới tính");
         String gender = scanner.nextLine();
-        System.out.println("Nhập tuổi");
-        String age = scanner.nextLine();
+        int age;
+        do {
+            try {
+                System.out.println("Nhập tuổi");
+                age = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (InputMismatchException | NumberFormatException e) {
+                System.out.println("Tuổi phải là số!");
+            }
+        } while (true);
         System.out.println("Đăng kí thành công");
         return new User(userName, passWord, name, gender, age);
     }
@@ -68,6 +78,8 @@ public class ManageAccount {
     public static void addAccount() {
         Account acc = createAcc();
         accounts.add(acc);
+        ReadAndWriteAccount.write(accounts);
+        scanner.nextLine();
     }
 
     public static int findIndexByUsername() {
@@ -80,34 +92,47 @@ public class ManageAccount {
                 return i;
             }
         }
-        System.out.println("Không tìm thấy tài khoản");
+
         return -1;
     }
 
     public static void findAccByIndex() {
         int index = findIndexByUsername();
-        System.out.println("Tìm thấy tài khoản có thông tin như sau: " + accounts.get(index).toString());
+        if (index==-1){
+            System.out.println("Không tìm thấy tài khoản");
+        }else {
+            System.out.println("Tìm thấy tài khoản có thông tin như sau: " + accounts.get(index).toString());
+        }
+        scanner.nextLine();
+
     }
 
     public static void deleteAccount() {
         int index = findIndexByUsername();
         accounts.remove(index);
         ReadAndWriteAccount.write(accounts);
-
+        scanner.nextLine();
     }
 
     public static void showAcc() {
         for (int i = 0; i < accounts.size(); i++) {
             accounts.get(i).toString();
-
         }
+    }
+
+    public static void editAccount() {
+        int index = findIndexByUsername();
+        Account acc = createAcc();
+        accounts.set(index, acc);
+        ReadAndWriteAccount.write(accounts);
+        scanner.nextLine();
     }
 
     public static void mainAdmin() {
 
         System.out.println("Chào bạn đây là phần dành cho quản trị viên");
         Scanner scanner = new Scanner(System.in);
-        ReadAndWriteAccount.write(ManageAccount.getAccounts());
+        ReadAndWriteAccount.write(ManageAccount.accounts);
         while (true) {
             System.out.println("<----------MENU-QUẢN TRỊ VIÊN---------->");
             System.out.println("""
@@ -119,8 +144,7 @@ public class ManageAccount {
                     6. Sửa thông tin sản phẩm
                     7. Xóa sản phẩm khỏi danh sách                                   
                     8. Hiển thị danh sách sản phẩm                                        
-                    9. Thoát
-                    10. Hiển thị tài khoản""");
+                    9. Thoát""");
             int choice;
             do {
                 try {
@@ -157,36 +181,27 @@ public class ManageAccount {
                 case 8:
                     ManageProduct.showProduct();
                     break;
-                case 10:
-                    showAcc();
-                    break;
                 case 9:
-                    ReadAndWriteAccount.write(ManageAccount.getAccounts());
+                    ReadAndWriteAccount.write(ManageAccount.accounts);
                     System.exit(0);
             }
         }
-
     }
 
-
     public static void mainUser() {
-
         System.out.println("Trang quản lý dành cho khách hàng");
         Scanner scanner = new Scanner(System.in);
-        ReadAndWriteAccount.write(ManageAccount.getAccounts());
+        ReadAndWriteAccount.write(ManageAccount.accounts);
         while (true) {
             System.out.println("<----------MENU-USER---------->");
             System.out.println("""
-                    1. Xem danh sách sản phẩm
-                    2. Tìm kiếm tài khoản
-                    3. Xóa tài khoản
-                    4. Thêm sản phẩm vào danh sách
-                    5. Tìm kiếm sản phẩm
-                    6. Sửa thông tin sản phẩm
-                    7. Xóa sản phẩm khỏi danh sách                                   
-                    8. Hiển thị danh sách sản phẩm                                        
-                    9. Thoát
-                    10. Hiển thị tài khoản""");
+                    1. Sửa thông tin tài khoản
+                    2. Xem danh sách sản phẩm
+                    3. Thêm sản phẩm vào giỏ hàng
+                    4. Xóa sản phẩm khỏi giỏ hàng
+                    5. Hiển thị hóa đơn
+                    6. Hiển thị top 3 sản phẩm có giá cao nhất                                   
+                    7. Thoát""");
             int choice;
             do {
                 try {
@@ -199,46 +214,31 @@ public class ManageAccount {
             } while (true);
             switch (choice) {
                 case 1:
-                    addAccount();
+                    editAccount();
+
                     break;
                 case 2:
-                    findAccByIndex();
+                    ManageProduct.showProduct();
                     break;
                 case 3:
-                    deleteAccount();
-
+                    ManageShoppingCart.addProductIntoCart();
                     break;
                 case 4:
-
-                    ManageProduct.addProduct();
+                    ManageShoppingCart.deleteProductCart();
                     break;
                 case 5:
-                    ManageProduct.findProductById();
-
+                    ManageShoppingCart.showBill();
                     break;
                 case 6:
-                    ManageProduct.editProduct();
-
+                    ManageProduct.showTop3Price();
                     break;
                 case 7:
-                    ManageProduct.deleteProduct();
-
-
-                    break;
-                case 8:
-                    ManageProduct.showProduct();
-
-                    break;
-                case 10:
-
-                    showAcc();
-
-                    break;
-                case 9:
-                    ReadAndWriteAccount.write(ManageAccount.getAccounts());
+                    ReadAndWriteAccount.write(ManageAccount.accounts);
                     System.exit(0);
             }
         }
 
     }
+
+
 }
