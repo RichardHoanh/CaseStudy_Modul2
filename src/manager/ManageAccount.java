@@ -1,26 +1,23 @@
 package manager;
 
 import io.ReadAndWriteAccount;
+import io.ReadAndWriteCart;
 import model.Account;
+import model.Product;
 import model.User;
 
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 public class ManageAccount {
     static public ArrayList<Account> accounts = ReadAndWriteAccount.read();
     static Scanner scanner = new Scanner(System.in);
-
-    public static void setAccounts(ArrayList<Account> accounts) {
-        ManageAccount.accounts = accounts;
-    }
-
+    static HashMap<String, ArrayList<Product>> allCart = ReadAndWriteCart.read();
+    static public String CurrentAccount;
 
     public static void login() {
         String username, password;
         System.out.println("Nhập tên đăng nhập");
-        username = scanner.nextLine();
+        CurrentAccount = username = scanner.nextLine();
         System.out.println("Nhập mật khẩu");
         password = scanner.nextLine();
         if (username.equals("Hoanh") && password.equals("1102")) {
@@ -30,7 +27,12 @@ public class ManageAccount {
             for (int i = 0; i < accounts.size(); i++) {
                 if (accounts.get(i).getUserName().equals(username) && accounts.get(i).getPassWord().equals(password)) {
                     System.out.println("Đăng nhập bằng tài khoản User");
-                    mainUser();
+
+                    if (allCart.get(CurrentAccount) == null) {
+                        allCart.put(CurrentAccount, new ArrayList<Product>());
+                        ReadAndWriteCart.write(allCart);
+                    }
+                    new ManageAccount().mainUser();
                     break;
                 }
 
@@ -38,6 +40,10 @@ public class ManageAccount {
             System.out.println("Đăng nhập thất bại");
         }
         scanner.nextLine();
+
+    }
+
+    private static void setupCart(String username) {
 
     }
 
@@ -114,11 +120,6 @@ public class ManageAccount {
         scanner.nextLine();
     }
 
-    public static void showAcc() {
-        for (int i = 0; i < accounts.size(); i++) {
-            accounts.get(i).toString();
-        }
-    }
 
     public static void editAccount() {
         int index = findIndexByUsername();
@@ -183,12 +184,14 @@ public class ManageAccount {
                     break;
                 case 9:
                     ReadAndWriteAccount.write(ManageAccount.accounts);
-                    System.exit(0);
+                    return;
             }
         }
     }
 
-    public static void mainUser() {
+    public void mainUser() {
+        ManageShoppingCart currentCart = new ManageShoppingCart(allCart.get(CurrentAccount));
+
         System.out.println("Trang quản lý dành cho khách hàng");
         Scanner scanner = new Scanner(System.in);
         ReadAndWriteAccount.write(ManageAccount.accounts);
@@ -215,26 +218,25 @@ public class ManageAccount {
             switch (choice) {
                 case 1:
                     editAccount();
-
                     break;
                 case 2:
                     ManageProduct.showProduct();
                     break;
                 case 3:
-                    ManageShoppingCart.addProductIntoCart();
+                    currentCart.addProductIntoCart();
                     break;
                 case 4:
-                    ManageShoppingCart.deleteProductCart();
+                    currentCart.deleteProductCart();
                     break;
                 case 5:
-                    ManageShoppingCart.showBill();
+                    currentCart.showBill();
                     break;
                 case 6:
                     ManageProduct.showTop3Price();
                     break;
                 case 7:
                     ReadAndWriteAccount.write(ManageAccount.accounts);
-                    System.exit(0);
+                    return;
             }
         }
 

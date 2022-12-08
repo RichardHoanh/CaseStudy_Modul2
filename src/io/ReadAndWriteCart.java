@@ -1,15 +1,15 @@
 package io;
 
+import manager.ManageShoppingCart;
 import model.Product;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ReadAndWriteCart {
-    public static void write(ArrayList<Product> cart) {
+public class ReadAndWriteCart implements Serializable {
+    public static void write(HashMap<String, ArrayList<Product>> cart) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream("cart.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -19,13 +19,13 @@ public class ReadAndWriteCart {
         }
     }
 
-    public static ArrayList<Product> read() {
+    public static HashMap<String, ArrayList<Product>> read() {
         try {
             FileInputStream fileInputStream = new FileInputStream("cart.txt");
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            return (ArrayList<Product>) objectInputStream.readObject();
+            return (HashMap<String, ArrayList<Product>>) objectInputStream.readObject();
         } catch (Exception e) {
-            return new ArrayList<>();
+            return new HashMap<String, ArrayList<Product>>();
         }
     }
 }

@@ -103,6 +103,7 @@ public class ManageProduct {
     }
 
     public static void showProduct() {
+        System.out.println("Danh sách sản phẩm như sau: ");
         System.out.printf("%-25s%-25s%-25s%-25s\n", "ID", "Name", "Amount", "Price");
 
         for (int i = 0; i < products.size(); i++) {
